@@ -12,7 +12,7 @@ build_kernel() {
 
     BUILD_VAR="-j$(nproc) -C $(pwd) O=$(pwd)/out ARCH=arm64 LLVM=1"
 
-    make $BUILD_VAR vendor/kona-perf_defconfig vendor/samsung/kona-sec-common.config vendor/samsung/r8q.config
+    make $BUILD_VAR vendor/kona-perf_defconfig vendor/samsung/kona-sec-common.config vendor/samsung/y2q.config
 
     make $BUILD_VAR
 
@@ -37,7 +37,7 @@ build_boot() {
     SECOFFSET="0x00000000"
     DTBOFFSET="0x01f00000"
     TAGSOFFSET="0x01e00000"
-    BOARD="SRPUB26A012"
+    BOARD="FRPSI26B012"
     PAGESZ="4096"
     RAMDISK="$(pwd)/boot/ramdisk"
     MONTH="$(date +%Y-%m)"
