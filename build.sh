@@ -12,7 +12,7 @@ build_kernel() {
 
     BUILD_VAR="-j$(nproc) -C $(pwd) O=$(pwd)/out ARCH=arm64 LLVM=1"
 
-    make $BUILD_VAR vendor/kona-perf_defconfig vendor/samsung/kona-sec-common.config vendor/samsung/y2q.config
+    make $BUILD_VAR vendor/kona-perf_defconfig vendor/samsung/kona-sec-common.config vendor/samsung/y2q.config ksu.config
 
     make $BUILD_VAR
 

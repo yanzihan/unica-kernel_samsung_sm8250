@@ -7,7 +7,7 @@ on:
           description: 'Upload release'
           type: boolean
           required: true
-          default: false
+          default: true
       changelog:
           description: 'Changelog'
           type: string
@@ -35,7 +35,14 @@ jobs:
             unzip \
             wget \
             zip \
-            zstd
+            zstd \
+            bc \
+            bison \
+            flex \
+            libssl-dev \
+            rsync \
+            ccache \
+            python3
 
       - name: Download prebuilt Google clang
         run: |
@@ -57,9 +64,10 @@ jobs:
           echo "RELEASE_TS=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
           : > version.txt
           echo "**Kernel version:** $(cat out/include/config/kernel.release)  " >> version.txt
+          echo "**Features:** KernelSU Enabled" >> version.txt
           echo >> version.txt
           export KHASH="$(git rev-parse HEAD)"
-          echo "**Kernel source:** [$KHASH](https://github.com/yanzihan/kernel_samsung_sm8250/tree/$KHASH)" >> version.txt
+          echo "**Kernel source:** [$KHASH](https://github.com/yanzihan/unica-kernel_samsung_sm8250/tree/$KHASH)" >> version.txt
 
           if [ "${{ github.event.inputs.release }}" = "true" ] && \
              [ -n "${{ github.event.inputs.changelog }}" ]; then
@@ -77,8 +85,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           body_path: version.txt
-          tag_name: "y2q-${{ env.RELEASE_TS }}"
-          name: "UN1CA-y2q-${{ env.RELEASE_TS }}"
+          tag_name: "y2q-ksu-${{ env.RELEASE_TS }}"
+          name: "UN1CA-y2q-KSU-${{ env.RELEASE_TS }}"
           files: |
             boot.img
             dtbo.img
