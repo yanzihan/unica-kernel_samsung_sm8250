@@ -7,7 +7,7 @@ on:
           description: 'Upload release'
           type: boolean
           required: true
-          default: true
+          default: false
       changelog:
           description: 'Changelog'
           type: string
@@ -16,8 +16,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       # 1. Checkout repository with submodules (shallow clone)
       - name: Checkout repository
@@ -35,18 +33,12 @@ jobs:
             unzip \
             wget \
             zip \
-            zstd \
-            bc \
-            bison \
-            flex \
-            libssl-dev \
-            rsync \
-            ccache \
-            python3
+            zstd
 
       - name: Download prebuilt Google clang
         run: |
-          wget -O clang-r547379.tar.gz https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/mirror-goog-main-llvm-toolchain-source/clang-r547379.tar.gz
+          wget --no-cookies --header "Cookie: gi=0" -O clang-r547379.tar.gz \
+            https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/mirror-goog-main-llvm-toolchain-source/clang-r547379.tar.gz
           mkdir clang-r547379; cd clang-r547379
           tar -xf ../clang-r547379.tar.gz
           rm ../clang-r547379.tar.gz
@@ -64,10 +56,9 @@ jobs:
           echo "RELEASE_TS=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
           : > version.txt
           echo "**Kernel version:** $(cat out/include/config/kernel.release)  " >> version.txt
-          echo "**Features:** KernelSU Enabled" >> version.txt
           echo >> version.txt
           export KHASH="$(git rev-parse HEAD)"
-          echo "**Kernel source:** [$KHASH](https://github.com/yanzihan/unica-kernel_samsung_sm8250/tree/$KHASH)" >> version.txt
+          echo "**Kernel source:** [$KHASH](https://github.com/UN1CA/kernel_samsung_sm8250/tree/$KHASH)" >> version.txt
 
           if [ "${{ github.event.inputs.release }}" = "true" ] && \
              [ -n "${{ github.event.inputs.changelog }}" ]; then
@@ -82,11 +73,11 @@ jobs:
         if: github.event.inputs.release
         uses: softprops/action-gh-release@v2.4.2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
         with:
           body_path: version.txt
-          tag_name: "y2q-ksu-${{ env.RELEASE_TS }}"
-          name: "UN1CA-y2q-KSU-${{ env.RELEASE_TS }}"
+          tag_name: "${{ env.RELEASE_TS }}"
+          name: "UN1CA-y2q-${{ env.RELEASE_TS }}"
           files: |
             boot.img
             dtbo.img
